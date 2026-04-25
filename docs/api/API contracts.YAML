@@ -1,0 +1,145 @@
+openapi: 3.0.0
+info:
+  title: Coworking Spaces API
+  version: 1.0.0
+  description: API for managing coworking spaces and reservations
+
+paths:
+
+  /reservations:
+    post:
+      summary: Create a new reservation
+      description: Allows a user to reserve a coworking space for a specific time range
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - spaceId
+                - startTime
+                - endTime
+              properties:
+                userId:
+                  type: integer
+                  example: 101
+                spaceId:
+                  type: integer
+                  example: 5
+                startTime:
+                  type: string
+                  format: date-time
+                  example: "2026-04-26T09:00:00Z"
+                endTime:
+                  type: string
+                  format: date-time
+                  example: "2026-04-26T12:00:00Z"
+
+      responses:
+        "201":
+          description: Reservation successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reservationId:
+                    type: integer
+                    example: 5001
+                  status:
+                    type: string
+                    example: "confirmed"
+                  message:
+                    type: string
+                    example: "Reservation created successfully"
+
+        "400":
+          description: Invalid input or missing fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid reservation data"
+
+        "409":
+          description: Conflict due to unavailable time slot
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Space is not available for the selected time range"
+
+
+
+  /spaces/{id}/availability:
+    put:
+      summary: Update space availability
+      description: Updates the availability status of a coworking space
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 5
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - available
+              properties:
+                available:
+                  type: boolean
+                  example: true
+
+      responses:
+        "200":
+          description: Availability updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  spaceId:
+                    type: integer
+                    example: 5
+                  available:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Availability updated successfully"
+
+        "404":
+          description: Space not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Space not found"
+
+        "400":
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid availability value"

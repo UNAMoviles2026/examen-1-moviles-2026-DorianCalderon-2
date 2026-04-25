@@ -1,0 +1,5 @@
+Los endpoints definidos responden directamente a funcionalidades clave del sistema. El endpoint POST /reservations permite modelar la acción principal del usuario: reservar un espacio de coworking. Incluye validaciones importantes como conflictos de horario, lo cual refleja lógica real del dominio.
+
+Por otro lado, el endpoint PUT /spaces/{id}/availability permite gestionar la disponibilidad de los espacios, lo cual es esencial para mantener consistencia en el sistema, especialmente en escenarios donde múltiples usuarios interactúan con los mismos recursos.
+
+Ambos endpoints siguen buenas prácticas REST, utilizan estructuras claras de request y response, e incluyen códigos de estado HTTP adecuados que representan correctamente cada situación posible (éxito, error de validación, conflicto o recurso no encontrado).
