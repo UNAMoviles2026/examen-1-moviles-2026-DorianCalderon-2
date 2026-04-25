@@ -12,12 +12,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.moviles.examenmoviles.data.model.Space
+import com.moviles.examenmoviles.data.mock.MockSpacesData
 import com.moviles.examenmoviles.ui.components.AppBottomBar
 import com.moviles.examenmoviles.ui.components.AppTopBar
 import com.moviles.examenmoviles.ui.components.SpaceCard
+import com.moviles.examenmoviles.ui.theme.ExamenMovilesTheme
 import com.moviles.examenmoviles.viewmodel.SpacesViewModel
 
 /**
@@ -31,6 +35,21 @@ fun SpacesListScreen(
     modifier: Modifier = Modifier
 ) {
     val spaces by viewModel.spaces.collectAsState()
+    SpacesListScreenContent(
+        spaces = spaces,
+        onSpaceClick = onSpaceClick,
+        onNavigateToScreen = onNavigateToScreen,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun SpacesListScreenContent(
+    spaces: List<Space>,
+    onSpaceClick: (String) -> Unit,
+    onNavigateToScreen: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val currentRoute = "spaces_list"
 
     Scaffold(
@@ -87,6 +106,18 @@ fun SpacesListScreen(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SpacesListScreenPreview() {
+    ExamenMovilesTheme {
+        SpacesListScreenContent(
+            spaces = MockSpacesData.getMockSpaces(),
+            onSpaceClick = {},
+            onNavigateToScreen = {}
+        )
     }
 }
 

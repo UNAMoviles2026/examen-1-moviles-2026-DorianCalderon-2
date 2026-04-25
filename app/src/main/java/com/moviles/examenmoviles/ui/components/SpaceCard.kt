@@ -134,7 +134,8 @@ fun SpaceImagePlaceholder(
         Color(0xFF2E7D32)
     )
 
-    val backgroundColor = colorOptions[spaceName.hashCode() % colorOptions.size]
+    val index = (spaceName.hashCode() and 0x7fffffff) % colorOptions.size
+    val backgroundColor = colorOptions[index]
 
     Column(
         modifier = modifier

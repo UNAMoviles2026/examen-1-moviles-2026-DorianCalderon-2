@@ -28,7 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.moviles.examenmoviles.data.mock.MockSpacesData
 import com.moviles.examenmoviles.data.model.Space
 import com.moviles.examenmoviles.ui.components.AppButton
 import com.moviles.examenmoviles.ui.components.AppBottomBar
@@ -36,6 +38,7 @@ import com.moviles.examenmoviles.ui.components.AppTopBar
 import com.moviles.examenmoviles.ui.components.AvailabilityBadge
 import com.moviles.examenmoviles.ui.components.InfoRow
 import com.moviles.examenmoviles.ui.components.PriceTag
+import com.moviles.examenmoviles.ui.theme.ExamenMovilesTheme
 import com.moviles.examenmoviles.viewmodel.SpacesViewModel
 
 /**
@@ -50,12 +53,32 @@ fun SpaceDetailScreen(
     modifier: Modifier = Modifier
 ) {
     val selectedSpace by viewModel.selectedSpace.collectAsState()
-    val currentRoute = "space_detail/$spaceId"
 
     // Load the space when screen is first composed
     LaunchedEffect(spaceId) {
         viewModel.selectSpaceById(spaceId)
     }
+
+    SpaceDetailScreenContent(
+        selectedSpace = selectedSpace,
+        spaceId = spaceId,
+        onBackClick = onBackClick,
+        onNavigateToScreen = onNavigateToScreen,
+        onReserveClick = { selectedId -> viewModel.reserveSpace(selectedId) },
+        modifier = modifier
+    )
+}
+
+@Composable
+fun SpaceDetailScreenContent(
+    selectedSpace: Space?,
+    spaceId: String,
+    onBackClick: () -> Unit,
+    onNavigateToScreen: (String) -> Unit,
+    onReserveClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val currentRoute = "space_detail/$spaceId"
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -77,7 +100,7 @@ fun SpaceDetailScreen(
         if (selectedSpace != null) {
             SpaceDetailContent(
                 space = selectedSpace!!,
-                viewModel = viewModel,
+                onReserveClick = onReserveClick,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
@@ -107,7 +130,7 @@ fun SpaceDetailScreen(
 @Composable
 fun SpaceDetailContent(
     space: Space,
-    viewModel: SpacesViewModel,
+    onReserveClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -202,13 +225,27 @@ fun SpaceDetailContent(
         AppButton(
             text = if (space.available) "Reserve Now" else "Not Available",
             onClick = {
-                viewModel.reserveSpace(space.id)
+                onReserveClick(space.id)
                 // TODO: Show confirmation message
             },
             isEnabled = space.available
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SpaceDetailScreenPreview() {
+    ExamenMovilesTheme {
+        SpaceDetailScreenContent(
+            selectedSpace = MockSpacesData.getMockSpaces().first(),
+            spaceId = "1",
+            onBackClick = {},
+            onNavigateToScreen = {},
+            onReserveClick = {}
+        )
     }
 }
 
@@ -230,7 +267,8 @@ fun SpaceDetailImagePlaceholder(
         Color(0xFFFF6F00)
     )
 
-    val backgroundColor = colorOptions[spaceName.hashCode() % colorOptions.size]
+    val index = (spaceName.hashCode() and Int.MAX_VALUE) % colorOptions.size
+    val backgroundColor = colorOptions[index]
 
     Column(
         modifier = modifier
