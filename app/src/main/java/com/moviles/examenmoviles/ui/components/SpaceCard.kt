@@ -1,6 +1,5 @@
 package com.moviles.examenmoviles.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,12 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import androidx.compose.foundation.Image
+import com.moviles.examenmoviles.R
 import com.moviles.examenmoviles.data.model.Space
 
 /**
@@ -47,7 +46,6 @@ fun SpaceCard(
         Column {
             // Image placeholder
             SpaceImagePlaceholder(
-                spaceName = space.name,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(180.dp)
@@ -123,32 +121,14 @@ fun SpaceCard(
  */
 @Composable
 fun SpaceImagePlaceholder(
-    spaceName: String,
     modifier: Modifier = Modifier
 ) {
-    val colorOptions = listOf(
-        Color(0xFF6200EE),
-        Color(0xFF03DAC6),
-        Color(0xFFFF6B6B),
-        Color(0xFFFFA500),
-        Color(0xFF2E7D32)
-    )
-
-    val index = (spaceName.hashCode() and 0x7fffffff) % colorOptions.size
-    val backgroundColor = colorOptions[index]
-
-    Column(
+    Image(
+        painter = painterResource(id = R.drawable.foto),
+        contentDescription = "Coworking space image",
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp, 12.dp, 0.dp, 0.dp))
-            .background(backgroundColor)
-    ) {
-        Text(
-            text = spaceName,
-            style = MaterialTheme.typography.headlineSmall,
-            color = Color.White,
-            modifier = Modifier
-                .padding(16.dp)
-        )
-    }
+            .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)),
+        contentScale = ContentScale.Crop
+    )
 }
 
